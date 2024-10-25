@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <!-- we list central first so Maven will search there first, otherwise we get lots of misses for third-party artifacts -->
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Maven Packages</name>
+                    <url>https://maven.pkg.github.com/department-of-veterans-affairs/ctt-packages</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>github</id>
+                    <name>GitHub CTT Packages Repository</name>
+                    <url>https://maven.pkg.github.com/department-of-veterans-affairs/ctt-packages</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <properties>
+                <downloadSources>true</downloadSources>
+                <downloadJavadocs>true</downloadJavadocs>
+            </properties>
+        </profile>
+    </profiles>
+
+  <servers>
+    <server>
+        <id>github</id>
+        <username>${env.GITHUB_USR}</username>
+        <password>${env.GITHUB_PSW}</password>
+    </server>
+  </servers>
+
+  <activeProfiles>
+    <!--make the profile active all the time -->
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+</settings>
