@@ -138,6 +138,39 @@ if ($overwrite -eq 'Y') {
     }
 }
 
+
+    # Check if the file already exists
+    if (Test-Path $filePath) {
+        $overwrite = $false
+        
+        # Ask for confirmation to overwrite
+        $overwrite = Read-Host "The file already exists. Do you want to overwrite it? (y/n)"
+        
+        if ($overwrite -ne 'y') {
+            Write-Host "Download canceled."
+            return
+        }
+    }
+
+$settingsPath = "$HOME\.m2\settings.xml"
+$settingsDownload = Read-Host "Download and place settings.xml to your user .m2 folder (so that you can find/pull VA HATS dependencies)? (Y/N)"
+if ($settingsDownload -eq 'Y') {
+    if (Test-Path $settingsPath) {
+        $overwrite = Read-Host "The file already exists. Do you want to overwrite it? (y/n)"
+        if ($overwrite -ne 'y') {
+            Write-Host "Download canceled."
+            return
+        } else {
+            Write-Host "Downloading settings.xml..."
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/department-of-veterans-affairs/hats-cucumber-framework-setup/refs/heads/main/settings.xml" -OutFile "$settingsPath"
+        }
+    }
+    else {
+        Write-Host "Downloading settings.xml..."
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/department-of-veterans-affairs/hats-cucumber-framework-setup/refs/heads/main/settings.xml" -OutFile "$settingsPath"
+    }
+}
+
 mvn -v
 git -v
 
