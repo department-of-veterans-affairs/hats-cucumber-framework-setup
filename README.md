@@ -10,5 +10,5 @@ Or..
 2. Ctrl+A
 3. Ctrl+C
 4. Windows Key+R
-5. type powershell.exe, hit enter
+5. type `powershell.exe`, hit enter
 6. Ctrl+V
