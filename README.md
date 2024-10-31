@@ -4,7 +4,7 @@
 
 Or..
 
-## The Easy Foolproof-ish Way
+## The Right Way
 
 1. open https://raw.githubusercontent.com/department-of-veterans-affairs/hats-cucumber-framework-setup/refs/heads/main/setup.ps1 in a browser
 2. Ctrl+A
