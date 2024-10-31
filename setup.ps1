@@ -6,7 +6,7 @@ $gitUrl = "https://github.com/git-for-windows/git/releases/download/v2.47.0.wind
 $downloads = @{
     "java"   = "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_windows_hotspot_11.0.9.1_1.zip"
     "maven"  = "https://downloads.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.zip"
-    "eclipse"= "https://download.eclipse.org/technology/epp/downloads/release/2024-12/M1/eclipse-jee-2024-12-M1-win32-x86_64.zip"
+    "eclipse"= "https://download.eclipse.org/technology/epp/downloads/release/2024-06/R/eclipse-jee-2024-06-R-win32-x86_64.zip"
 }
 
 # Function to download a file
