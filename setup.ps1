@@ -66,6 +66,7 @@ function Add-To-Path-From-Filename {
             [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$directory", [EnvironmentVariableTarget]::User)
             #Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newpath
             Write-Host "Added $directory to user PATH."
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
         } else {
             Write-Host "$directory is already in user PATH."
         }
