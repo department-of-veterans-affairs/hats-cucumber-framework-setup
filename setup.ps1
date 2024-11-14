@@ -4,7 +4,7 @@ $targetDir = "$HOME\HATS"
 $7zipUrl = "https://www.7-zip.org/a/7zr.exe"
 $gitUrl = "https://github.com/git-for-windows/git/releases/download/v2.47.0.windows.1/PortableGit-2.47.0-64-bit.7z.exe"
 $downloads = @{
-    "java"   = "https://corretto.aws/downloads/resources/11.0.25.9.1/amazon-corretto-11.0.25.9.1-windows-x64-jdk.zip.sig"
+    "java"   = "https://corretto.aws/downloads/resources/11.0.25.9.1/amazon-corretto-11.0.25.9.1-windows-x64-jdk.zip"
     "maven"  = "https://downloads.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip"
     "eclipse"= "https://download.eclipse.org/technology/epp/downloads/release/2024-06/R/eclipse-jee-2024-06-R-win32-x86_64.zip"
 }
