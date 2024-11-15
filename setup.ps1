@@ -54,23 +54,26 @@ function Add-To-Path-From-Filename {
 
     # Find all directories containing the specified file
     $directories = Get-ChildItem -Path $searchDirectory -Recurse -Filter $fileName | Select-Object -ExpandProperty DirectoryName -Unique
-
+    Write-Host "Current PATH:\n $env:PATH"
+    $path = [System.Environment]::GetEnvironmentVariable("Path", "User")
+    
     foreach ($directory in $directories) {
         # Get the current user PATH
-        $currentPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
         # Check if the directory is already in PATH
-        if (!($currentPath -contains $directory)) {
+        if (!($path -like "*"+$directory+"*")) {
             # Add the directory to PATH
-            $newPath = "$currentPath;$directory"
+            $path = "$path;$directory"
             #[System.Environment]::SetEnvironmentVariable("Path", $newPath, "User")
-            [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$directory", [EnvironmentVariableTarget]::User)
             #Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newpath
-            Write-Host "Added $directory to user PATH."
+            Write-Host "Going to be adding $directory to user PATH."
         } else {
             Write-Host "$directory is already in user PATH."
         }
     }
 
+    [Environment]::SetEnvironmentVariable("Path", $path, [EnvironmentVariableTarget]::User)
+    Write-Host "New PATH:\n $env:PATH"
+    
     if (-not $directories) {
         Write-Host "No directories found containing the file '$fileName'."
     }
@@ -121,14 +124,14 @@ $JavaHome = Get-ChildItem -Path "$HOME\HATS\java" -Directory | Sort-Object Creat
 [Environment]::SetEnvironmentVariable("JAVA_HOME", $JavaHome.FullName, [EnvironmentVariableTarget]::User)
 Write-Host "Added $JavaHome as JAVA_HOME."
 
-# Keep the PowerShell window open
-Write-Host "All software installation tasks completed. Press Enter to continue..."
-[void][System.Console]::ReadLine()
-
+# reload path and JAVA_HOME
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::User)
 $env:JAVA_HOME = [System.Environment]::GetEnvironmentVariable("JAVA_HOME", [System.EnvironmentVariableTarget]::User)
 
-#TODO - add cacerts to JDK installation
+# Keep the PowerShell window open
+Write-Host "All software installation tasks completed. Press Enter to continue..."
+
+[void][System.Console]::ReadLine()
 
 $overwrite = Read-Host "If you use the VA VPN, public certs are required to interact with certain resources. Download and install? (Y/N)"
 if ($overwrite -eq 'Y') {
@@ -142,20 +145,6 @@ if ($overwrite -eq 'Y') {
         keytool.exe -import -alias va-certificate-authority -file "$targetDir\VA-Internal-S2-RCA1-v1.pem" -keystore $cacertFile -storepass changeit -noprompt
     }
 }
-
-
-    # Check if the file already exists
-    if (Test-Path $filePath) {
-        $overwrite = $false
-        
-        # Ask for confirmation to overwrite
-        $overwrite = Read-Host "The file already exists. Do you want to overwrite it? (y/n)"
-        
-        if ($overwrite -ne 'y') {
-            Write-Host "Download canceled."
-            return
-        }
-    }
 
 $settingsPath = "$HOME\.m2\settings.xml"
 $settingsDownload = Read-Host "Download and place settings.xml to your user .m2 folder (so that you can find/pull VA HATS dependencies)? (Y/N)"
@@ -188,9 +177,8 @@ if ($enterGithubCredentials -eq 'Y') {
     [Environment]::SetEnvironmentVariable("GITHUB_USR", $GithubUsername, [EnvironmentVariableTarget]::User)
     [Environment]::SetEnvironmentVariable("GITHUB_PSW", $GithubToken, [EnvironmentVariableTarget]::User)
 }
+
+# Keep the PowerShell window open
+Write-Host "All tasks completed..."
 # Keep the PowerShell window open
 [void][System.Console]::ReadLine()
-
-cd $targetDir
-
-git clone https://github.com/department-of-veterans-affairs/hats-cucumber-framework.git
