@@ -149,6 +149,14 @@ if ($overwrite -eq 'Y') {
 $settingsPath = "$HOME\.m2\settings.xml"
 $settingsDownload = Read-Host "Download and place settings.xml to your user .m2 folder (so that you can find/pull VA HATS dependencies)? (Y/N)"
 if ($settingsDownload -eq 'Y') {
+
+    # Create .m2 folder if it doesn't exist (i.e. never installed maven), otherwise next step fails
+    $m2Path = "$HOME\.m2"
+    if (-not (Test-Path -Path $m2Path)) {
+        New-Item -Path $m2Path -ItemType Directory
+        Write-Host "Created .m2 directory at: $m2Path"
+    }
+    
     if (Test-Path $settingsPath) {
         $overwrite = Read-Host "The file already exists. Do you want to overwrite it? (y/n)"
         if ($overwrite -ne 'y') {
