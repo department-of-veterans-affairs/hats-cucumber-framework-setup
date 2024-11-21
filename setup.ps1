@@ -178,8 +178,13 @@ git -v
 
 $enterGithubCredentials = Read-Host "Enter Github Credentials? (Y/N)"
 if ($enterGithubCredentials -eq 'Y') {
+    # mask the token so it isn't viewable in screen recordings or via console history
     $GithubToken = Read-Host -AsSecureString -Prompt "Please navigate to https://github.com/settings/tokens  and generate a new Classic Token with 'repo' and 'write:packages' scopes. Paste the generated key here"
     $GithubUsername = Read-Host -Prompt "Enter your Github Username (Typically your email)"
+
+    # convert the SecureString object into a regular string.
+    $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($GithubToken)
+    $GithubToken = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($ptr)
 
     Write-Host "Adding Github Username/Password to environmental variables."
     [Environment]::SetEnvironmentVariable("GITHUB_USR", $GithubUsername, [EnvironmentVariableTarget]::User)
