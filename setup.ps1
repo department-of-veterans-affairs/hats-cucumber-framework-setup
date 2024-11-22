@@ -80,9 +80,9 @@ function Add-To-Path-From-Filename {
 }
 
 # Check the length of the PATH variable before starting. Soft max is 2047 characters, we are very unlikely to use more than 350
-#if ([System.Environment]::GetEnvironmentVariable("PATH").Length -gt 1700) {
-#    throw "Error: The PATH variable exceeds 1800 characters. Please contact your IT to reduce the size of your PATH variable or reduce it yourself: https://stackoverflow.com/questions/34491244/environment-variable-is-too-large-on-windows-10"
-#}
+if ([System.Environment]::GetEnvironmentVariable("PATH").Length -gt 1700) {
+    throw "Error: The PATH variable exceeds 1800 characters. Please contact your IT to reduce the size of your PATH variable or reduce it yourself: https://stackoverflow.com/questions/34491244/environment-variable-is-too-large-on-windows-10"
+}
 
 # Create target directory if it doesn't exist
 if (-not (Test-Path $targetDir)) {
@@ -149,6 +149,14 @@ if ($overwrite -eq 'Y') {
 $settingsPath = "$HOME\.m2\settings.xml"
 $settingsDownload = Read-Host "Download and place settings.xml to your user .m2 folder (so that you can find/pull VA HATS dependencies)? (Y/N)"
 if ($settingsDownload -eq 'Y') {
+
+    # Create .m2 folder if it doesn't exist (i.e. never installed maven), otherwise next step fails
+    $m2Path = "$HOME\.m2"
+    if (-not (Test-Path -Path $m2Path)) {
+        New-Item -Path $m2Path -ItemType Directory
+        Write-Host "Created .m2 directory at: $m2Path"
+    }
+    
     if (Test-Path $settingsPath) {
         $overwrite = Read-Host "The file already exists. Do you want to overwrite it? (y/n)"
         if ($overwrite -ne 'y') {
@@ -170,8 +178,13 @@ git -v
 
 $enterGithubCredentials = Read-Host "Enter Github Credentials? (Y/N)"
 if ($enterGithubCredentials -eq 'Y') {
+    # mask the token so it isn't viewable in screen recordings or via console history
     $GithubToken = Read-Host -AsSecureString -Prompt "Please navigate to https://github.com/settings/tokens  and generate a new Classic Token with 'repo' and 'write:packages' scopes. Paste the generated key here"
     $GithubUsername = Read-Host -Prompt "Enter your Github Username (Typically your email)"
+
+    # convert the SecureString object into a regular string.
+    $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($GithubToken)
+    $GithubToken = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($ptr)
 
     Write-Host "Adding Github Username/Password to environmental variables."
     [Environment]::SetEnvironmentVariable("GITHUB_USR", $GithubUsername, [EnvironmentVariableTarget]::User)
