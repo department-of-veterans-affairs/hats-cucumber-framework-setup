@@ -81,7 +81,7 @@ function Add-To-Path-From-Filename {
 
 # Check the length of the PATH variable before starting. Soft max is 2047 characters, we are very unlikely to use more than 350
 if ([System.Environment]::GetEnvironmentVariable("PATH").Length -gt 1700) {
-    throw "Error: The PATH variable exceeds 1800 characters. Please contact your IT to reduce the size of your PATH variable or reduce it yourself: https://stackoverflow.com/questions/34491244/environment-variable-is-too-large-on-windows-10"
+    throw "Error: The PATH variable exceeds 1800 characters. Please contact yourIT and request to enable long paths as described here https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry"
 }
 
 # Create target directory if it doesn't exist
