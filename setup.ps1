@@ -160,11 +160,11 @@ if ($overwrite -eq 'Y') {
 		$oldCertPath = Join-Path -Path $cacertFile.FullName -ChildPath "cacerts"
 		$newCertPath = Join-Path -Path $targetDir -ChildPath "cacerts"
 		
-		# Check old cacerts exist before attempting to replace
-		if (Test-Path -Path $oldCertPath){
-			
+		# Check old cacerts exists before attempting to replace it
+		if (Test-Path -Path $oldCertPath {
 			# Copy the new cacerts to the  old location, replacing it
        		Copy-Item -Path $newCertPath -Destination $oldCertPath -Force
+       		
        		Write-Host "Replaced cacerts in $($cacertFile.FullName)"
 		} else {
 			Write-Host "No cacerts file found in $($cacertFile.FullName)"
