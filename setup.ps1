@@ -135,14 +135,40 @@ Write-Host "All software installation tasks completed. Press Enter to continue..
 
 $overwrite = Read-Host "If you use the VA VPN, public certs are required to interact with certain resources. Download and install? (Y/N)"
 if ($overwrite -eq 'Y') {
-    Write-Host "Downloading VA Cert..."
-    Invoke-WebRequest -Uri "https://department-of-veterans-affairs.github.io/github-handbook/guides/security/VA-Internal-S2-RCA1-v1.pem" -OutFile "$targetDir\VA-Internal-S2-RCA1-v1.pem"
-    Write-Host "Adding CA cert to cacerts files..."
-    # Find all directories containing the specified file
-    $cacertsFiles = Get-ChildItem -Path $targetDir -Recurse -Filter "cacerts" | Select-Object -ExpandProperty DirectoryName -Unique
+    Write-Host "Downloading Cacerts..."
+    Invoke-WebRequest -Uri "https://github.com/department-of-veterans-affairs/hats-cucumber-framework-setup/blob/main/cacerts" -OutFile "$targetDir\cacerts"
+    
+    # Check if the cacerts file was downloaded
+    if (-Not (Test-Path -Path "$targetDir\cacerts")) {
+		Write-Error "Failed to download cacerts file."
+	}
+	
+    Write-Host "Adding VA cert to cacerts files..."
+    
+    # Get all the directories in $HOME\HATS containing a cacerts file
+    $cacertsFiles = Get-ChildItem -Path $targetDir -Recurse -Filter "cacerts" | Select-Object -ExpandProperty Directory -Unique
+   
+    # Replace the old cacerts with the new cacerts
     foreach ($cacertFile in $cacertsFiles) {
-        Write-Host "Adding cert to $cacertFile"
-        keytool.exe -import -alias va-certificate-authority -file "$targetDir\VA-Internal-S2-RCA1-v1.pem" -keystore $cacertFile -storepass changeit -noprompt
+		
+		# Skip the target directory to avoid overwrite error
+		if ($cacertFile.FullName -eq $targetDir) {
+			Write-Host "Skipping target directory: $($cacertFile.FullName)"
+			continue
+		}
+		
+		$oldCertPath = Join-Path -Path $cacertFile.FullName -ChildPath "cacerts"
+		$newCertPath = Join-Path -Path $targetDir -ChildPath "cacerts"
+		
+		# Check old cacerts exist before attempting to replace
+		if (Test-Path -Path $oldCertPath){
+			
+			# Copy the new cacerts to the  old location, replacing it
+       		Copy-Item -Path $newCertPath -Destination $oldCertPath -Force
+       		Write-Host "Replaced cacerts in $($cacertFile.FullName)"
+		} else {
+			Write-Host "No cacerts file found in $($cacertFile.FullName)"
+		}
     }
 }
 
