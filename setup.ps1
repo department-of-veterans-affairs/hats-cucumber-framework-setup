@@ -143,31 +143,30 @@ if ($overwrite -eq 'Y') {
 		Write-Error "Failed to download cacerts file."
 	}
 	
-    Write-Host "Adding VA cert to cacerts files..."
+    Write-Host "Replacing cacerts with VA's..."
     
-    # Get all the directories in $HOME\HATS containing a cacerts file
+    # Get all the directories in $targetDir containing a cacerts file
     $cacertsFiles = Get-ChildItem -Path $targetDir -Recurse -Filter "cacerts" | Select-Object -ExpandProperty Directory -Unique
    
     # Replace the old cacerts with the new cacerts
-    foreach ($cacertFile in $cacertsFiles) {
+    foreach ($cacertsFile in $cacertsFiles) {
 		
 		# Skip the target directory to avoid overwrite error
-		if ($cacertFile.FullName -eq $targetDir) {
-			Write-Host "Skipping target directory: $($cacertFile.FullName)"
+		if ($cacertsFile.FullName -eq $targetDir) {
+			Write-Host "Skipping target directory: $($cacertsFile.FullName)"
 			continue
 		}
 		
-		$oldCertPath = Join-Path -Path $cacertFile.FullName -ChildPath "cacerts"
-		$newCertPath = Join-Path -Path $targetDir -ChildPath "cacerts"
+		$oldCertPath = Join-Path -Path $cacertsFile.FullName -ChildPath "cacerts"
 		
 		# Check old cacerts exists before attempting to replace it
-		if (Test-Path -Path $oldCertPath {
+		if (Test-Path -Path $oldCertPath) {
 			# Copy the new cacerts to the  old location, replacing it
-       		Copy-Item -Path $newCertPath -Destination $oldCertPath -Force
+       		Copy-Item -Path "$targetDir\cacerts" -Destination $oldCertPath -Force
        		
-       		Write-Host "Replaced cacerts in $($cacertFile.FullName)"
+       		Write-Host "Replaced cacerts in $($cacertsFile.FullName)"
 		} else {
-			Write-Host "No cacerts file found in $($cacertFile.FullName)"
+			Write-Host "No cacerts file found in $($cacertsFile.FullName)"
 		}
     }
 }
