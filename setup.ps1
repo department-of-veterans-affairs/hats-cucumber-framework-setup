@@ -136,7 +136,7 @@ Write-Host "All software installation tasks completed. Press Enter to continue..
 $overwrite = Read-Host "If you use the VA VPN, public certs are required to interact with certain resources. Download and install? (Y/N)"
 if ($overwrite -eq 'Y') {
     Write-Host "Downloading Cacerts..."
-    Invoke-WebRequest -Uri "https://github.com/department-of-veterans-affairs/hats-cucumber-framework-setup/blob/main/cacerts" -OutFile "$targetDir\cacerts"
+    Invoke-WebRequest -Uri "https://github.com/department-of-veterans-affairs/hats-cucumber-framework-setup/raw/refs/heads/main/cacerts" -OutFile "$targetDir\cacerts"
     
     # Check if the cacerts file was downloaded
     if (-Not (Test-Path -Path "$targetDir\cacerts")) {
