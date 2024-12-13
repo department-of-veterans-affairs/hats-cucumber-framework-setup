@@ -138,12 +138,7 @@ if ($overwrite -eq 'Y') {
     Write-Host "Downloading Cacerts..."
     Invoke-WebRequest -Uri "https://github.com/department-of-veterans-affairs/hats-cucumber-framework-setup/raw/refs/heads/main/cacerts" -OutFile "$targetDir\cacerts"
     
-    # Check if the cacerts file was downloaded
-    if (-Not (Test-Path -Path "$targetDir\cacerts")) {
-		Write-Error "Failed to download cacerts file."
-	}
-	
-    Write-Host "Replacing cacerts with VA's..."
+    Write-Host "Replacing cacerts files with VA's..."
     
     # Get all the directories in $targetDir containing a cacerts file
     $cacertsFiles = Get-ChildItem -Path $targetDir -Recurse -Filter "cacerts" | Select-Object -ExpandProperty Directory -Unique
@@ -159,15 +154,10 @@ if ($overwrite -eq 'Y') {
 		
 		$oldCertPath = Join-Path -Path $cacertsFile.FullName -ChildPath "cacerts"
 		
-		# Check old cacerts exists before attempting to replace it
-		if (Test-Path -Path $oldCertPath) {
-			# Copy the new cacerts to the  old location, replacing it
-       		Copy-Item -Path "$targetDir\cacerts" -Destination $oldCertPath -Force
+		# Copy the new cacerts to the  old location, replacing it
+       	Copy-Item -Path "$targetDir\cacerts" -Destination $oldCertPath -Force
        		
-       		Write-Host "Replaced cacerts in $($cacertsFile.FullName)"
-		} else {
-			Write-Host "No cacerts file found in $($cacertsFile.FullName)"
-		}
+       	Write-Host "Replaced cacerts in $($cacertsFile.FullName)"
     }
 }
 
