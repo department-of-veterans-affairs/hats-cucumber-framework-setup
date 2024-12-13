@@ -148,7 +148,7 @@ if ($overwrite -eq 'Y') {
 		
 		# Skip the target directory to avoid overwrite error
 		if ($cacertsFile.FullName -eq $targetDir) {
-			Write-Host "Skipping target directory: $($cacertsFile.FullName)"
+			Write-Host "Skipping the newly downloaded cacerts in target directory: $($cacertsFile.FullName)"
 			continue
 		}
 		
